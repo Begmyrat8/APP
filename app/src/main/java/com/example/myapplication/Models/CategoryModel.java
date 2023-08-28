@@ -1,13 +1,13 @@
 package com.example.myapplication.Models;
 
 public class CategoryModel {
-    int id, category;
+    int id;
     String img, title, color;
 
 
-    public CategoryModel(int id, int category, String img, String title, String color) {
+    public CategoryModel(int id,  String img, String title, String color) {
         this.id = id;
-        this.category = category;
+
         this.img = img;
         this.title = title;
         this.color = color;
@@ -18,14 +18,6 @@ public class CategoryModel {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getCategory() {
-        return category;
-    }
-
-    public void setCategory(int category) {
-        this.category = category;
     }
 
     public String getImg() {

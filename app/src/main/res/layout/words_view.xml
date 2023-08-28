@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight = "0.1"
                 android:layout_marginLeft="15dp"
-                android:src="@drawable/flag_ru"/>
+                android:src="@mipmap/flag_ru"/>
 
             <LinearLayout
                 android:layout_width="0dp"

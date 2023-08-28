@@ -168,7 +168,7 @@ public class Calculator extends AppCompatActivity {
         Double result = 0.0;
         String secondNumber = solution_tv.getText().toString();
 
-        if (Double.parseDouble(secondNumber) < 0.0000001 && op.equals("/") || secondNumber.equals("") && op.equals("/")) {
+        if (Double.parseDouble(secondNumber) < 0.00000000000000001 && op.equals("/") || secondNumber.equals("") && op.equals("/")) {
             Toast.makeText(this, "На ноль делить нелзя", Toast.LENGTH_LONG).show();
         } else {
             switch (op) {
@@ -188,8 +188,7 @@ public class Calculator extends AppCompatActivity {
                 default:
                     break;
             }
-
-            DecimalFormat format = new DecimalFormat("");
+            DecimalFormat format = new DecimalFormat();
             solution_tv.setText(format.format(result));
             result_tv.setText(firstNumber + op + secondNumber + " = " + format.format(result));
         }

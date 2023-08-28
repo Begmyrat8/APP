@@ -169,7 +169,7 @@
         android:layout_marginBottom="40dp"
         android:contentDescription="@string/_7"
         android:gravity="center"
-        android:src="@mipmap/ic_dictionary_round"
+        android:src="@mipmap/ic_dictionary_foreground"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/button10"
         app:layout_constraintEnd_toEndOf="parent"

@@ -9,17 +9,28 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.myapplication.adaptor.CategoryViewPagerAdaptor;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Objects;
+
 public class Category extends AppCompatActivity {
 
     TabLayout tabLayout;
     ViewPager2 viewPager2;
     CategoryViewPagerAdaptor categoryViewPagerAdaptor;
+    String categoryName ;
+    String categoryNumber ;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
+
+        categoryName = getIntent().getStringExtra("categoryName");
+        categoryNumber = getIntent().getStringExtra("categoryNumber");
+        System.out.println("BBBBBBBBBBBBBB");
+        System.out.println(categoryNumber);
+
         tabLayout = findViewById(R.id.categoryTabLayout);
         viewPager2 = findViewById(R.id.categoryView_pager);
         categoryViewPagerAdaptor = new CategoryViewPagerAdaptor(this);
@@ -46,9 +57,11 @@ public class Category extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                tabLayout.getTabAt(position).select();
+                Objects.requireNonNull(tabLayout.getTabAt(position)).select();
             }
         });
 
     }
+
+    public String getMyData() {return categoryNumber;}
 }

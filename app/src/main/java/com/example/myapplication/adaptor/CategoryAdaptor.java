@@ -38,20 +38,20 @@ public class CategoryAdaptor extends RecyclerView.Adapter<CategoryAdaptor.Catego
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
+
+
+        String categoryName = categories.get(position).getTitle();
+        holder.categoryTitle.setText(categoryName);
         holder.categoryBg.setBackgroundColor(Color.parseColor(categories.get(position).getColor()));
 
-        int imageId = context.getResources().getIdentifier(categories.get(position).getImg(),"mipmap",context.getPackageName());
-        holder.categoryImage.setImageResource(imageId);
+        holder.categoryImage.setImageResource(context.getResources().getIdentifier(categories.get(position).getImg(),"mipmap",context.getPackageName()));
 
-        holder.categoryTitle.setText(categories.get(position).getTitle());
+        holder.itemView.setOnClickListener(v -> {
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(context, Category.class);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, Category.class);
+            intent.putExtra("categoryName", categoryName);
+            intent.putExtra("categoryNumber",String.valueOf(categories.get(position).getId()));
+            context.startActivity(intent);
         });
     }
 

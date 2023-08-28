@@ -17,14 +17,7 @@ public class CategoryViewPagerAdaptor extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position){
-            case 0:
-                return new CategoryDetailFragment();
-            case 1:
-                return new CategoryFragment();
-            default:
-                return new CategoryDetailFragment();
-        }
+        return position == 1 ? new CategoryFragment() : new CategoryDetailFragment();
     }
 
     @Override

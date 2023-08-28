@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.Datebase.DatabaseAccess;
 import com.example.myapplication.Models.CategoryModel;
 import com.example.myapplication.R;
 import com.example.myapplication.adaptor.CategoryAdaptor;
@@ -20,8 +21,10 @@ import java.util.List;
 
 public class CategoryFragment extends Fragment {
 
-    RecyclerView categoryRecycler;
+   List<CategoryModel> categoryList = new ArrayList<>();
     CategoryAdaptor categoryAdaptor;
+    DatabaseAccess databaseAccess;
+    RecyclerView categoryRecycler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,25 +38,17 @@ public class CategoryFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_second, container, false);
 
-
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        databaseAccess = DatabaseAccess.getInstances(getActivity().getApplicationContext());
+        databaseAccess.open();
 
         categoryRecycler = view.findViewById(R.id.categoryList);
-
-        List<CategoryModel> categoryList = new ArrayList<>();
-        categoryList.add(new CategoryModel(1,1,"colors","Colors","#605D5D"));
-        categoryList.add(new CategoryModel(2,2,"fruit","Fruit","#FF6200EE"));
-        categoryList.add(new CategoryModel(3,3,"hobby","Hobby","#FF2800"));
-        categoryList.add(new CategoryModel(4,4,"clock","Clock","#FF03DAC5"));
-        categoryList.add(new CategoryModel(5,5,"colors","Colors","#605D5D"));
-        categoryList.add(new CategoryModel(6,6,"fruit","Fruit","#FF6200EE"));
-        categoryList.add(new CategoryModel(7,7,"hobby","Hobby","#FF2800"));
-        categoryList.add(new CategoryModel(8,8,"clock","Clock","#FF03DAC5"));
-        categoryList.add(new CategoryModel(9,9,"colors","Colors","#605D5D"));
+        categoryRecycler.setHasFixedSize(true);
+        categoryList = databaseAccess.getAllCategory();
 
         setCategoryRecycler(categoryList);
     }
@@ -64,6 +59,7 @@ public class CategoryFragment extends Fragment {
 
         categoryAdaptor = new CategoryAdaptor(getContext(), categoryList);
         categoryRecycler.setAdapter(categoryAdaptor);
-
     }
+
+
 }

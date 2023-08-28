@@ -9,31 +9,28 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.Datebase.DatabaseAccess;
 import com.example.myapplication.Datebase.DatabaseOpenHelper;
+import com.example.myapplication.Models.Word;
+import com.example.myapplication.Models.Words;
 import com.example.myapplication.R;
-import com.example.myapplication.WordDict;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.WordsViewHolder> implements Filterable {
+
+public class DetailsAdapter extends RecyclerView.Adapter<DetailsAdapter.DetailsViewHolder> {
 
     private Context mCtx;
-    private List<WordDict> wordsList;
-    private List<WordDict> wordsListFull;
+    private List<Words> wordsList;
     private BottomSheetBehavior mBottomSheetBehavior;
-    private TextView textView;
     private OnItemClickListener onItemClickListener;
 
     private SQLiteDatabase database;
@@ -42,37 +39,32 @@ public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.WordsViewHol
     String COL_TITLE = "title";
     String COL_LANG = "lang";
 
-    public WordsAdapter(Context mCtx, List<WordDict> wordsName, BottomSheetBehavior mBottomSheetBehavior, TextView textView, OnItemClickListener onItemClickListener) {
+
+    public DetailsAdapter(Context mCtx, List<Words> wordsName, BottomSheetBehavior mBottomSheetBehavior, OnItemClickListener onItemClickListener) {
         this.mCtx = mCtx;
         this.wordsList = wordsName;
-        wordsListFull = new ArrayList<>(wordsList);
         this.mBottomSheetBehavior = mBottomSheetBehavior;
-        this.textView = textView;
         this.onItemClickListener = onItemClickListener;
     }
 
-
     @NonNull
     @Override
-    public WordsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public DetailsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.words_view, parent, false);
-        return new WordsViewHolder(view, mCtx, viewType);
+        return new DetailsViewHolder(view, mCtx, viewType);
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final WordsViewHolder holder, @SuppressLint("RecyclerView") final int position) {
-//        final Words words = wordsList.get(position);
-
-        final WordDict words = wordsList.get(position);
+    public void onBindViewHolder(@NonNull final DetailsViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+        final Words words = wordsList.get(position);
 
         final String word = words.getWord();
         final String lang = words.getLang();
 
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        mBottomSheetBehavior.setPeekHeight(0);
-
         holder.wordsName.setText(word);
+
 
         if (lang.equals("0")) {
 //            holder.wordsLang.setImageResource(R.drawable.flag_deu);
@@ -81,9 +73,18 @@ public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.WordsViewHol
 //            holder.wordsLang.setImageResource(R.drawable.flag_tkm);
             Picasso.get().load(R.mipmap.flag_en).into(holder.wordsLang);
         }
-
         databaseHelper = new DatabaseOpenHelper(mCtx);
         database = databaseHelper.getWritableDatabase();
+
+        DatabaseAccess databaseAccess = DatabaseAccess.getInstances(mCtx.getApplicationContext());
+        databaseAccess.open();
+
+        Word bookmarkWord = databaseAccess.getWordFromBookmark(word);
+        int isMark = bookmarkWord == null? 0:1;
+        holder.wordsFav.setTag(isMark);
+
+        int icon = bookmarkWord == null? R.drawable.ic_baseline_bookmark_border_24:R.drawable.ic_baseline_bookmark_24;
+        holder.wordsFav.setImageResource(icon);
 
         final float scale = mCtx.getResources().getDisplayMetrics().density;
         final int pixels = (int) (800 * scale + 0.5f);
@@ -91,11 +92,10 @@ public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.WordsViewHol
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager imm = (InputMethodManager) mCtx.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
 
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 mBottomSheetBehavior.setPeekHeight(0);
+
 
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
@@ -107,7 +107,6 @@ public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.WordsViewHol
                         mBottomSheetBehavior.setPeekHeight(pixels);
                     }
                 }, 200);
-                notifyDataSetChanged();
 
                 String title = getLastRow("history");
 
@@ -125,9 +124,55 @@ public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.WordsViewHol
             }
         });
 
-        holder.wordsFav.setVisibility(View.INVISIBLE);
+//        holder.wordsFav.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                String title = getLastRow("bookmark");
+//
+//                if (!title.equals(word)) {
+//
+//                    ContentValues contentValues = new ContentValues();
+//                    contentValues.put(COL_TITLE, word);
+//                    contentValues.put(COL_LANG, lang);
+//
+//                    database.insert("bookmark", null, contentValues);
+//                    holder.wordsFav.setImageResource(R.drawable.ic_bookmark_black_24dp);
+//                    notifyDataSetChanged();
+//
+//                }
+//            }
+//        });
 
+        holder.wordsFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int i = (int) holder.wordsFav.getTag();
+
+                if (i==0){
+
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(COL_TITLE, word);
+                    contentValues.put(COL_LANG, lang);
+                    database.insert("bookmark", null, contentValues);
+                    holder.wordsFav.setImageResource(R.drawable.ic_baseline_bookmark_24);
+                    notifyDataSetChanged();
+                    holder.wordsFav.setTag(1);
+
+                }else if (i==1){
+
+                    database.delete("bookmark", "title" + "=\"" + word+"\"", null) ;
+                    holder.wordsFav.setImageResource(R.drawable.ic_baseline_bookmark_border_24);
+                    notifyDataSetChanged();
+                    holder.wordsFav.setTag(0);
+                }
+
+            }
+
+        });
     }
+
 
     @Override
     public int getItemCount() {
@@ -144,58 +189,22 @@ public class WordsAdapter extends RecyclerView.Adapter<WordsAdapter.WordsViewHol
         return position;
     }
 
-    public class WordsViewHolder extends RecyclerView.ViewHolder {
+    public class DetailsViewHolder extends RecyclerView.ViewHolder {
         TextView wordsName;
         ImageView wordsLang, wordsFav;
         public Context context;
         View mView;
 
-        public WordsViewHolder(View itemView, Context context, int viewType) {
+        public DetailsViewHolder(View itemView, Context context, int viewType) {
             super(itemView);
             mView = itemView;
             this.context = context;
-            wordsName =(TextView) itemView.findViewById(R.id.words);
+            wordsName = itemView.findViewById(R.id.words);
             wordsLang = itemView.findViewById(R.id.word_lang);
             wordsFav = itemView.findViewById(R.id.words_fav);
         }
     }
 
-    @Override
-    public Filter getFilter() {
-        return wordsFilter;
-    }
-
-    private Filter wordsFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            List<WordDict> filteredList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0){
-                filteredList.addAll(wordsListFull);
-            }else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-                for (WordDict words: wordsListFull){
-                    if (words.getWord().toLowerCase().contains(filterPattern)){
-                        filteredList.add(words);
-                    }
-                }
-            }
-            FilterResults results = new FilterResults();
-            results.values = filteredList;
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            wordsList = new ArrayList<WordDict>();
-            wordsList.clear();
-            if (wordsList != null){
-                wordsList.addAll((List) results.values);
-            }
-            notifyDataSetChanged();
-        }
-    };
 
     public interface OnItemClickListener {
         void onItemClicked(int position, String object, String lang);
