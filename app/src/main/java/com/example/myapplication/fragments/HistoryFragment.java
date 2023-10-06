@@ -9,21 +9,20 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
 
-public class ThirdFragment extends Fragment {
 
+public class HistoryFragment extends Fragment {
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_third, container, false);
+        return inflater.inflate(R.layout.fragment_history, container, false);
     }
 }

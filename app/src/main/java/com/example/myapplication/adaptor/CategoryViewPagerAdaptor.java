@@ -6,7 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.myapplication.Category;
 import com.example.myapplication.fragments.CategoryDetailFragment;
-import com.example.myapplication.fragments.CategoryFragment;
+import com.example.myapplication.fragments.CategoryDetailFragment2;
 
 public class CategoryViewPagerAdaptor extends FragmentStateAdapter {
 
@@ -17,7 +17,7 @@ public class CategoryViewPagerAdaptor extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        return position == 1 ? new CategoryFragment() : new CategoryDetailFragment();
+        return position == 1 ? new CategoryDetailFragment2() : new CategoryDetailFragment();
     }
 
     @Override

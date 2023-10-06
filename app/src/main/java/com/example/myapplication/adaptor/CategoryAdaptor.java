@@ -44,7 +44,7 @@ public class CategoryAdaptor extends RecyclerView.Adapter<CategoryAdaptor.Catego
         holder.categoryTitle.setText(categoryName);
         holder.categoryBg.setBackgroundColor(Color.parseColor(categories.get(position).getColor()));
 
-        holder.categoryImage.setImageResource(context.getResources().getIdentifier(categories.get(position).getImg(),"mipmap",context.getPackageName()));
+        holder.categoryImage.setImageResource(context.getResources().getIdentifier(categories.get(position).getImg(),"drawable",context.getPackageName()));
 
         holder.itemView.setOnClickListener(v -> {
 

@@ -31,20 +31,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+public class CategoryDetailFragment2 extends Fragment {
 
-public class CategoryDetailFragment extends Fragment implements View.OnClickListener {
+    List<Words> wordsList = new ArrayList<>();
+    DetailsAdapter detailsAdapter;
 
-     List<Words> wordsList = new ArrayList<>();
-     DetailsAdapter detailsAdapter;
+    RecyclerView recyclerView;
 
-     RecyclerView recyclerView;
-
-     BottomSheetBehavior mBottomSheetBehavior;
-     ImageButton closeBottomSheet;
-     TextView def_Word, def_Value;
-     ImageView defPronounce;
-     TextToSpeech textToSpeech;
-     ImageView defBookmark;
+    BottomSheetBehavior mBottomSheetBehavior;
+    ImageButton closeBottomSheet;
+    TextView def_Word, def_Value;
+    ImageView defPronounce;
+    TextToSpeech textToSpeech;
+    ImageView defBookmark;
 
 
     DatabaseAccess databaseAccess;
@@ -52,23 +51,18 @@ public class CategoryDetailFragment extends Fragment implements View.OnClickList
     String language;
 
 
-    public CategoryDetailFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getArguments() != null) {
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_category_russian, container, false);
-
-
+        return inflater.inflate(R.layout.fragment_category_english, container, false);
     }
 
     @Override
@@ -81,13 +75,13 @@ public class CategoryDetailFragment extends Fragment implements View.OnClickList
         databaseAccess = DatabaseAccess.getInstances(getActivity().getApplicationContext());
         databaseAccess.open();
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.category_rus_words_list);
+        recyclerView = (RecyclerView) view.findViewById(R.id.category_eng_words_list);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         Category activity = (Category) getActivity();
         String categoryNumber = activity.getMyData();
-        wordsList = databaseAccess.getCategoryData(categoryNumber, "0");
+        wordsList = databaseAccess.getCategoryData(categoryNumber, "1");
         System.out.println("AAAAAAAAAAAAAAAAAAAAAAAA");
         System.out.println(wordsList.size());
         System.out.println(categoryNumber);
@@ -189,7 +183,7 @@ public class CategoryDetailFragment extends Fragment implements View.OnClickList
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
 
-                    textToSpeech.setLanguage(new Locale("ru"));
+                    textToSpeech.setLanguage(new Locale("eng"));
 
                 }
             }
@@ -206,7 +200,6 @@ public class CategoryDetailFragment extends Fragment implements View.OnClickList
 
 
     }
-
     public void onDestroy() {
         if (textToSpeech != null) {
             textToSpeech.stop();
@@ -246,7 +239,6 @@ public class CategoryDetailFragment extends Fragment implements View.OnClickList
         });
 
     }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -281,11 +273,5 @@ public class CategoryDetailFragment extends Fragment implements View.OnClickList
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-
-    @Override
-    public void onClick(View v) {
-
     }
 }

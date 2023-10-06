@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.myapplication.fragments.CategoryFragment;
 import com.example.myapplication.fragments.DictionaryFragment;
-import com.example.myapplication.fragments.ThirdFragment;
+import com.example.myapplication.fragments.HistoryFragment;
 
 public class MyViewPagerAdaptor extends FragmentStateAdapter {
 
@@ -25,7 +25,7 @@ public class MyViewPagerAdaptor extends FragmentStateAdapter {
             case 1:
                 return new CategoryFragment();
             case 2:
-                return new ThirdFragment();
+                return new HistoryFragment();
             default:
                 return new DictionaryFragment();
         }

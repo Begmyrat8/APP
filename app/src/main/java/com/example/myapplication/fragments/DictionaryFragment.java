@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.text.Editable;
@@ -173,8 +174,19 @@ public class DictionaryFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        defPronounce.setOnClickListener(this);
+        defPronounce.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String key = def_Word.getText().toString();
+                textToSpeech.setSpeechRate(1f);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    textToSpeech.speak(key,TextToSpeech.QUEUE_FLUSH,null,null);
+                } else {
+                    textToSpeech.speak(key, TextToSpeech.QUEUE_FLUSH, null);
+                }
 
+            }
+        });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -199,7 +211,7 @@ public class DictionaryFragment extends Fragment implements View.OnClickListener
             @Override
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
-                    textToSpeech.setLanguage(Locale.GERMAN);
+                    textToSpeech.setLanguage(new Locale(""));
                 }
             }
         });
@@ -229,12 +241,12 @@ public class DictionaryFragment extends Fragment implements View.OnClickListener
                     def_Value.setText(a);
                 }
 
-                if (lang.equals("1")){
-                    defPronounce.setEnabled(false);
-                }
-                else if (lang.equals("0")){
-                    defPronounce.setEnabled(true);
-                }
+//                if (lang.equals("1")){
+//                    defPronounce.setEnabled(false);
+//                }
+//                else if (lang.equals("0")){
+//                    defPronounce.setEnabled(true);
+//                }
 
                 Word bookmarkWord = databaseAccess.getWordFromBookmark(object);
                 int isMark = bookmarkWord == null? 0:1;
@@ -326,16 +338,7 @@ public class DictionaryFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bottom_sheet_pronounce_word:
-                String key = def_Word.getText().toString();
-                textToSpeech.setSpeechRate(0.9f);
-                textToSpeech.speak(key, TextToSpeech.QUEUE_FLUSH, null);
 
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -376,5 +379,4 @@ public class DictionaryFragment extends Fragment implements View.OnClickListener
     public void onDetach() {
         super.onDetach();
     }
-
 }
